@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 class GetRecipesUseCase @Inject constructor(
     private val repository: RecipeRepository
-){
-    operator  fun invoke(): Flow<List<Recipe>> = repository.getRecipes()
+) {
+    operator fun invoke(tags: String? = null): Flow<List<Recipe>> =
+        repository.getRecipes(tags)
 }

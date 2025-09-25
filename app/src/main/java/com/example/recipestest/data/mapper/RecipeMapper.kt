@@ -8,7 +8,13 @@ import com.example.recipestest.data.model.RecipeDto
 import com.example.recipestest.data.model.RecipeInformationDto
 import com.example.recipestest.domain.model.Recipe
 
-fun RecipeDto.toEntity() = RecipeEntity(id, title, image, summary)
+fun RecipeDto.toEntity(tags: String? = null) = RecipeEntity(
+    id = id,
+    title = title,
+    image = image,
+    summary = summary,
+    tags = tags
+)
 fun RecipeEntity.toDomain() = Recipe(id, title, image, summary)
 fun RecipeDto.toDomain() = Recipe(id, title, image, summary)
 fun RecipeInformationDto.toDetailsEntity() = RecipeDetailsEntity(

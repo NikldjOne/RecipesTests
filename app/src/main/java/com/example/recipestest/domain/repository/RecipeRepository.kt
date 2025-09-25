@@ -5,7 +5,7 @@ import com.example.recipestest.domain.model.Recipe
 import kotlinx.coroutines.flow.Flow
 
 interface RecipeRepository{
-    fun getRecipes(): Flow<List<Recipe>>
+    fun getRecipes(tags: String? = null): Flow<List<Recipe>>
     suspend fun getRecipeInformation(id:Int): RecipeInformationDto
-    fun searchRecipes(query: String): Flow<List<Recipe>> // 🔥 новый метод
+    fun searchRecipes(query: String): Flow<List<Recipe>>
 }

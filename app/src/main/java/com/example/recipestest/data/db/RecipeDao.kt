@@ -25,4 +25,11 @@ interface RecipeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertIngredients(ingredients: List<IngredientEntity>)
+
+    @Query("SELECT * FROM recipes WHERE title LIKE '%' || :query || '%'")
+    fun searchRecipes(query: String): Flow<List<RecipeEntity>>
+
+    @Query("SELECT * FROM recipes WHERE (:tag IS NULL OR tags = :tag)")
+    fun getRecipesByTag(tag: String?): Flow<List<RecipeEntity>>
+
 }

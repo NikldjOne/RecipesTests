@@ -8,7 +8,8 @@ data class RecipeEntity(
     @PrimaryKey val id: Int,
     val title: String,
     val image: String?,
-    val summary: String?
+    val summary: String?,
+    val tags: String? = null
 )
 
 @Entity(tableName = "recipe_details")

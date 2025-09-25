@@ -10,13 +10,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recipestest.databinding.FragmentRecipesBinding
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+
+private val categories = listOf(
+    null to "Все",
+    "vegetarian" to "Vegetarian",
+    "dessert" to "Dessert",
+    "breakfast" to "Breakfast",
+    "lunch" to "Lunch",
+    "dinner" to "Dinner"
+)
+
 
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
@@ -42,14 +53,33 @@ class RecipesFragment : Fragment() {
         binding.recyclerRecipes.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerRecipes.adapter = adapter
 
-        viewModel.isLoading.observe(viewLifecycleOwner){loading ->
-            binding.containerLoading.visibility = if(loading) View.VISIBLE else View.GONE
+        categories.forEach { (tag, label) ->
+            val chip = Chip(requireContext()).apply {
+                text = label
+                isCheckable = true
+                setOnClickListener {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewModel.loadByCategory(tag)
+                            .collect { list ->
+                                adapter.submitList(list)
+                                binding.recyclerRecipes.scrollToPosition(0)
+                            }
+                    }
+                }
+            }
+            binding.chipGroupCategories.addView(chip)
+        }
+
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
+            binding.containerLoading.visibility = if (loading) View.VISIBLE else View.GONE
             binding.recyclerRecipes.visibility = if (loading) View.GONE else View.VISIBLE
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.recipes.collect { list ->
                 adapter.submitList(list)
+                binding.recyclerRecipes.scrollToPosition(0)
             }
         }
         val searchFlow = callbackFlow {
@@ -62,14 +92,29 @@ class RecipesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             searchFlow
                 .debounce(1000)
-                .filter { it.isNotBlank() }
-                .collect { query ->
-                    viewModel.search(query).collect { list ->
-                        adapter.submitList(list)
+                .flatMapLatest { query ->
+                    if (query.isBlank()) {
+                        viewModel.loadRandom()
+                    } else {
+                        binding.chipGroupCategories.clearCheck()
+                        (binding.chipGroupCategories.getChildAt(0) as Chip).isChecked = true
+                        viewModel.search(query)
+                    }
+                }
+                .collect { list ->
+                    adapter.submitList(list)
+                    binding.recyclerRecipes.scrollToPosition(0)
+
+                    if (list.isEmpty()) {
+                        binding.recyclerRecipes.visibility = View.GONE
+                        binding.emptyContainer.visibility = View.VISIBLE
+                    } else {
+                        binding.recyclerRecipes.visibility = View.VISIBLE
+                        binding.emptyContainer.visibility = View.GONE
                     }
                 }
         }
-
+        (binding.chipGroupCategories.getChildAt(0) as Chip).isChecked = true
     }
 
     override fun onDestroyView() {

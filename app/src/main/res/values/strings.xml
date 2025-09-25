@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">RecipesTest</string>
     <string name="search_recipes">Search recipes</string>
+    <string name="no_data_recipes">Список рецептов пуст</string>
 </resources>

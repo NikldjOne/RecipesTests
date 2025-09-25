@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipesViewModel @Inject constructor(
     private val getRecipesUseCase: GetRecipesUseCase,
-    private val searchRecipesUseCase: SearchRecipesUseCase
+    private val searchRecipesUseCase: SearchRecipesUseCase,
 ) : ViewModel() {
 
     private val _isLoading = MutableLiveData(false)
@@ -32,4 +32,15 @@ class RecipesViewModel @Inject constructor(
             .onStart { _isLoading.postValue(true) }
             .onEach { _isLoading.postValue(false) }
             .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun loadRandom() =
+        getRecipesUseCase()
+            .onStart { _isLoading.postValue(true) }
+            .onEach { _isLoading.postValue(false) }
+
+    fun loadByCategory(tag: String?) =
+        getRecipesUseCase(tag)
+            .onStart { _isLoading.postValue(true) }
+            .onEach { _isLoading.postValue(false) }
+
 }
