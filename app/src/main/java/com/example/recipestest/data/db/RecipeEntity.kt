@@ -10,3 +10,23 @@ data class RecipeEntity(
     val image: String?,
     val summary: String?
 )
+
+@Entity(tableName = "recipe_details")
+data class RecipeDetailsEntity(
+    @PrimaryKey val id: Int,
+    val title: String?,
+    val image: String?,
+    val summary: String?,
+    val readyInMinutes: Int?,
+    val servings: Int?,
+    val instructions: String?
+)
+
+@Entity(tableName = "ingredients")
+data class IngredientEntity(
+    @PrimaryKey(autoGenerate = true) val localId: Int = 0,
+    val recipeId: Int,  // foreign key to RecipeDetailsEntity
+    val ingredientId: Int?,
+    val name: String?,
+    val original: String?
+)

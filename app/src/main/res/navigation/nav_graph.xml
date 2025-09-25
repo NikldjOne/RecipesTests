@@ -22,6 +22,10 @@
     <fragment
         android:id="@+id/recipeDetailsFragment"
         android:name="com.example.recipestest.presintation.ui.recipes.RecipeDetailsFragment"
-        android:label="Details"
-        tools:layout="@layout/fragment_recipes_details"/>
+        android:label="Recipe Details"
+        tools:layout="@layout/fragment_recipes_details">
+        <argument
+            android:name="recipeId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

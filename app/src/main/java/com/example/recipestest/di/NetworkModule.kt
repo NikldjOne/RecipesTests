@@ -56,7 +56,9 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext ctx: Context): AppDatabase =
-        Room.databaseBuilder(ctx, AppDatabase::class.java, "recipes.db").build()
+        Room.databaseBuilder(ctx, AppDatabase::class.java, "recipes.db")
+            .fallbackToDestructiveMigration(false)
+            .build()
 
     @Provides
     fun provideRecipeDao(db: AppDatabase): RecipeDao = db.recipeDao()
