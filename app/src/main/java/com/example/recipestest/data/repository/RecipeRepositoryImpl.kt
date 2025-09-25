@@ -17,13 +17,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-const val SPOONACULAR_API_KEY="02566c05029a4aa291e547828674f441"
-const val SPOONACULAR_API_KEY2="6cb9919a70144c96a12c7e6b83001be1"
-const val SPOONACULAR_API_KEY3="922049b84c5e443781c9dfe46b3ce6f2"
-const val SPOONACULAR_API_KEY4="ab0854eff82740b59ecd452d69294ad5"
-const val SPOONACULAR_API_KEY5="0cc584c3730e4b579c6dfdf4cf9c33ce"
-const val SPOONACULAR_API_KEY6="616592cb772f43ee902826b7584f90bb"
-
 class RecipeRepositoryImpl @Inject constructor(
     private val api: RecipeApi,
     private val dao: RecipeDao
@@ -34,7 +27,6 @@ class RecipeRepositoryImpl @Inject constructor(
 
         val networkRecipes = try {
             val response = api.getRandomRecipes(
-                apiKey = SPOONACULAR_API_KEY6,
                 number = 20,
                 tags = tags
             )
